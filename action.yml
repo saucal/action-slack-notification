@@ -1,0 +1,78 @@
+name: "Checkout and Build"
+description: ""
+inputs:
+  token:
+    description: "Slack Token"
+    required: false
+    default: ''
+  channel:
+    description: "Channel ID to publish the message on"
+    required: false
+    default: ''
+  ts:
+    description: "Message ID to update"
+    required: false
+    default: ''
+  force:
+    description: "Force new message"
+    required: false
+    default: 'false'
+  status:
+    description: "Status"
+    required: false
+    default: ''
+  commit-message:
+    description: "Commit message"
+    required: false
+    default: ''
+  commit-branch:
+    description: "Commit branch"
+    required: false
+    default: ''
+  commit-repo:
+    description: "Commit repo"
+    required: false
+    default: ''
+  commit-author:
+    description: "Commit author"
+    required: false
+    default: ''
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Setup token
+      if: ${{ inputs.token != '' }}
+      shell: bash
+      run: echo -n "${{ inputs.token }}" > "$RUNNER_TEMP/slack.token"
+
+    - name: Setup channel
+      if: ${{ inputs.channel != '' }}
+      shell: bash
+      run: echo -n "${{ inputs.channel }}" > "$RUNNER_TEMP/slack.channel"
+
+    - name: Setup TS
+      if: ${{ inputs.ts != '' }}
+      shell: bash
+      run: echo -n "${{ inputs.ts }}" > "$RUNNER_TEMP/slack.ts"
+
+    - name: Load token
+      id: load
+      shell: bash
+      run: |
+        function get() {
+          if [ -f "$1" ]; then
+            cat "$1"
+          fi
+
+          echo -n "";
+        }
+        echo "token=$(get "$RUNNER_TEMP/slack.token")" >> $GITHUB_OUTPUT
+        echo "channel=$(get "$RUNNER_TEMP/slack.channel")" >> $GITHUB_OUTPUT
+        echo "ts=$(get "$RUNNER_TEMP/slack.ts")" >> $GITHUB_OUTPUT
+
+    - name: Test
+      shell: bash
+      run: |
+        echo "${{ toJson(steps) }}"
+        exit 0
