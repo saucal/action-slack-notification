@@ -80,14 +80,26 @@ runs:
 
     - name: Send Slack Message (Blocks)
       uses: archive/github-actions-slack@master
+      if: ${{ steps.prepare.outputs.function == 'send-message' }}
       id: send-message
       with:
         slack-function: "${{ steps.prepare.outputs.function }}"
         slack-bot-user-oauth-access-token: "${{ steps.prepare.outputs.token }}"
         slack-channel: "${{ steps.prepare.outputs.channel }}"
         slack-blocks: "${{ steps.prepare.outputs.blocks }}"
-        slack-update-message-ts: "${{ steps.prepare.outputs.ts }}"
 
     - name: Setup TS
+      if: ${{ steps.prepare.outputs.function == 'send-message' }}
       shell: bash
       run: echo -n "${{ fromJson(steps.send-message.outputs.slack-result).response.message.ts }}" > "$RUNNER_TEMP/slack.ts"
+
+    - name: Update Slack Message (Blocks)
+      uses: archive/github-actions-slack@master
+      if: ${{ steps.prepare.outputs.function == 'update-message' }}
+      id: update-message
+      with:
+        slack-function: "${{ steps.prepare.outputs.function }}"
+        slack-bot-user-oauth-access-token: "${{ steps.prepare.outputs.token }}"
+        slack-channel: "${{ steps.prepare.outputs.channel }}"
+        slack-update-message-blocks: "${{ steps.prepare.outputs.blocks }}"
+        slack-update-message-ts: "${{ steps.prepare.outputs.ts }}"
