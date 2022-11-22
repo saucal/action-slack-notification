@@ -1,0 +1,45 @@
+[
+  {
+    "type": "header",
+    "text": {
+      "type": "plain_text",
+      "text": "Deployment :loading:",
+      "emoji": true
+    }
+  },
+  {
+    "type": "section",
+    "fields": [
+      {
+        "type": "mrkdwn",
+        "text": "*Started by:*\n<https://example.com|Juan Perez>"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*Status:*\nPreparing :package:"
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "fields": [
+      {
+        "type": "mrkdwn",
+        "text": "*Repository:*\n<https://example.com|owner/repo>"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*Branch:*\n<https://example.com|develop>"
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "fields": [
+      {
+        "type": "mrkdwn",
+        "text": "*Message:*\nTest commit\n\nTest Description longer"
+      }
+    ]
+  }
+]

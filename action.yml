@@ -56,20 +56,21 @@ runs:
       shell: bash
       run: echo -n "${{ inputs.ts }}" > "$RUNNER_TEMP/slack.ts"
 
-    - name: Load token
-      id: load
+    - name: Force new message
+      if: ${{ inputs.force != 'false' }}
       shell: bash
-      run: |
-        function get() {
-          if [ -f "$1" ]; then
-            cat "$1"
-          fi
+      run: rm -rf "$RUNNER_TEMP/slack.ts"
 
-          echo -n "";
-        }
-        echo "token=$(get "$RUNNER_TEMP/slack.token")" >> $GITHUB_OUTPUT
-        echo "channel=$(get "$RUNNER_TEMP/slack.channel")" >> $GITHUB_OUTPUT
-        echo "ts=$(get "$RUNNER_TEMP/slack.ts")" >> $GITHUB_OUTPUT
+    - name: Load token
+      id: prepare
+      shell: bash
+      env:
+        STATUS: ${{ inputs.status }}
+        COMMIT_MESSAGE: ${{ inputs.commit-message }}
+        COMMIT_BRANCH: ${{ inputs.commit-branch }}
+        COMMIT_REPO: ${{ inputs.commit-repo }}
+        COMMIT_AUTHOR: ${{ inputs.commit-author }}
+      run: "${{ github.action_path }}/prepare-message.sh"
 
     - name: Test
       shell: bash
