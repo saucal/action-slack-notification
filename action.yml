@@ -87,3 +87,7 @@ runs:
         slack-channel: ${{ steps.prepare.outputs.channel }}
         slack-blocks: ${{ steps.prepare.outputs.blocks }}
         slack-update-message-ts: ${{ steps.prepare.outputs.ts }}
+
+    - name: Setup TS
+      shell: bash
+      run: echo -n "${{ fromJson(steps.send-message.outputs.slack-result).response.message.ts }}" > "$RUNNER_TEMP/slack.ts"
