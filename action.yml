@@ -77,3 +77,13 @@ runs:
       run: |
         echo '${{ toJson(steps) }}'
         exit 0
+
+    - name: Send Slack Message (Blocks)
+      uses: archive/github-actions-slack@master
+      id: send-message
+      with:
+        slack-function: ${{ steps.prepare.outputs.function }}
+        slack-bot-user-oauth-access-token: ${{ steps.prepare.outputs.token }} # This should be preset as an organization level secret
+        slack-channel: ${{ steps.prepare.outputs.channel }}
+        slack-blocks: ${{ steps.prepare.outputs.blocks }}
+        slack-update-message-ts: ${{ steps.prepare.outputs.ts }}
