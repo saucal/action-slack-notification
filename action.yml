@@ -21,6 +21,10 @@ inputs:
     description: "Status"
     required: false
     default: ''
+  final-status:
+    description: "Final Status"
+    required: false
+    default: ''
   commit-message:
     description: "Commit message"
     required: false
@@ -65,6 +69,7 @@ runs:
       id: prepare
       shell: bash
       env:
+        FINAL_STATUS: ${{ inputs.final-status }}
         STATUS: ${{ inputs.status }}
         COMMIT_MESSAGE: ${{ inputs.commit-message }}
         COMMIT_BRANCH: ${{ inputs.commit-branch }}

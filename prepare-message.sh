@@ -19,6 +19,18 @@ if [ -n "$STATUS" ]; then
 	update "Status" "$STATUS"
 fi
 
+if [ "$FINAL_STATUS" != "" ]; then
+	if [ "$FINAL_STATUS" == "success" ]; then
+		update "Status" "Success :white_check_mark:"
+	elif [ "$FINAL_STATUS" == "cancelled" ]; then
+		update "Status" "Cancelled :black_square_for_stop:"
+	elif [ "$FINAL_STATUS" == "failure" ]; then
+		update "Status" "Failure :warning:"
+	else
+		update "Status" "Unknown :interrobang:"
+	fi
+fi
+
 if [ -n "$COMMIT_MESSAGE" ]; then
 	update "Message" "$COMMIT_MESSAGE"
 fi
