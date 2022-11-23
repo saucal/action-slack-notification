@@ -12,11 +12,11 @@
     "fields": [
       {
         "type": "mrkdwn",
-        "text": "*Started by:*\n<https://example.com|Juan Perez>"
+        "text": "*Status:*\nPreparing :package:"
       },
       {
         "type": "mrkdwn",
-        "text": "*Status:*\nPreparing :package:"
+        "text": "*Started by:*\n<https://example.com|Juan Perez>"
       }
     ]
   },
