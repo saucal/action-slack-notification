@@ -72,11 +72,12 @@ runs:
         COMMIT_AUTHOR: ${{ inputs.commit-author }}
       run: "${{ github.action_path }}/prepare-message.sh"
 
-    - name: Test
+    - name: Validate config
+      if: ${{ steps.prepare.outputs.token == '' || steps.prepare.outputs.channel == '' }}
       shell: bash
       run: |
-        echo '${{ toJson(steps) }}'
-        exit 0
+        echo 'Need to set up token and channel to send the message to';
+        exit 1
 
     - name: Send Slack Message (Blocks)
       uses: archive/github-actions-slack@master
