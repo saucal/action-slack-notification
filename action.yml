@@ -77,16 +77,9 @@ runs:
         COMMIT_AUTHOR: ${{ inputs.commit-author }}
       run: "${{ github.action_path }}/prepare-message.sh"
 
-    - name: Validate config
-      if: ${{ steps.prepare.outputs.token == '' || steps.prepare.outputs.channel == '' }}
-      shell: bash
-      run: |
-        echo 'Need to set up token and channel to send the message to';
-        exit 1
-
     - name: Send Slack Message (Blocks)
       uses: archive/github-actions-slack@master
-      if: ${{ steps.prepare.outputs.function == 'send-message' }}
+      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'send-message' }}
       id: send-message
       with:
         slack-function: "${{ steps.prepare.outputs.function }}"
@@ -95,13 +88,13 @@ runs:
         slack-blocks: "${{ steps.prepare.outputs.blocks }}"
 
     - name: Setup TS
-      if: ${{ steps.prepare.outputs.function == 'send-message' }}
+      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'send-message' }}
       shell: bash
       run: echo -n "${{ fromJson(steps.send-message.outputs.slack-result).response.message.ts }}" > "$RUNNER_TEMP/slack.ts"
 
     - name: Update Slack Message (Blocks)
       uses: archive/github-actions-slack@master
-      if: ${{ steps.prepare.outputs.function == 'update-message' }}
+      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'update-message' }}
       id: update-message
       with:
         slack-function: "${{ steps.prepare.outputs.function }}"
