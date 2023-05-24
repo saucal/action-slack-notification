@@ -109,8 +109,13 @@ runs:
         slack-update-message-ts: "${{ steps.prepare.outputs.ts }}"
 
     - name: Post file to thread
-      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'update-message' && inputs.data-blob != '' }}
+      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && inputs.data-blob != '' }}
       shell: bash
       run: |
+        if [ "${{ steps.prepare.outputs.ts }}" != "" ]; then
+          SLACK_TS="${{ steps.prepare.outputs.ts }}"
+        else
+          SLACK_TS=$(<$RUNNER_TEMP/slack.ts)
+        fi
         echo -n "${{ inputs.data-blob }}" > "$RUNNER_TEMP/slack-data-blob"
-        curl -F file=@$RUNNER_TEMP/slack-data-blob -F "initial_comment=${{ inputs.commit-message }}" -F channels=${{ steps.prepare.outputs.channel }} -F thread_ts=${{ steps.prepare.outputs.ts }} -H "Authorization: Bearer ${{ steps.prepare.outputs.token }}" https://slack.com/api/files.upload
+        curl -F file=@$RUNNER_TEMP/slack-data-blob -F "initial_comment=${{ inputs.commit-message }}" -F channels=${{ steps.prepare.outputs.channel }} -F thread_ts=$SLACK_TS -H "Authorization: Bearer ${{ steps.prepare.outputs.token }}" https://slack.com/api/files.upload
