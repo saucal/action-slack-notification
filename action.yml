@@ -41,7 +41,12 @@ inputs:
     description: "Commit author"
     required: false
     default: ''
+  file-to-upload:
+    description: "A file to upload to a message"
+    required: false
+    default: ''
     
+
 runs:
   using: "composite"
   steps:
@@ -102,3 +107,9 @@ runs:
         slack-channel: "${{ steps.prepare.outputs.channel }}"
         slack-update-message-blocks: "${{ steps.prepare.outputs.blocks }}"
         slack-update-message-ts: "${{ steps.prepare.outputs.ts }}"
+
+    - name: Post file to thread
+      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'post-file-to-thread' && inputs.file-to-upload != '' }}
+      shell: bash
+      run: |
+        curl -F file=@${{ inputs.file-to-upload }} -F "initial_comment=${{ inputs.commit-message }}" -F channels=${{ steps.prepare.outputs.channel }} -F thread_ts=${{ steps.prepare.outputs.ts }} -H "Authorization: Bearer ${{ steps.prepare.outputs.token }}" https://slack.com/api/files.upload
