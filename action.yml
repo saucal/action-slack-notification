@@ -41,6 +41,10 @@ inputs:
     description: "Commit author"
     required: false
     default: ''
+  data-file:
+    description: "the path to a file that will be posted on a thread"
+    required: false
+    default: ''
   data-blob:
     description: "A piece of data that will be posted as a file on a thread"
     required: false
@@ -108,7 +112,19 @@ runs:
         slack-update-message-blocks: "${{ steps.prepare.outputs.blocks }}"
         slack-update-message-ts: "${{ steps.prepare.outputs.ts }}"
 
-    - name: Post file to thread
+    - name: Post a file to thread
+      if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && inputs.data-file != '' }}
+      shell: bash
+      run: |
+        if [ "${{ steps.prepare.outputs.ts }}" != "" ]; then
+          SLACK_TS="${{ steps.prepare.outputs.ts }}"
+        else
+          SLACK_TS=$(<$RUNNER_TEMP/slack.ts)
+        fi
+        curl -F file=@${{ inputs.data-file }} -F "initial_comment=${{ inputs.commit-message }}" -F channels=${{ steps.prepare.outputs.channel }} -F thread_ts=$SLACK_TS -H "Authorization: Bearer ${{ steps.prepare.outputs.token }}" https://slack.com/api/files.upload
+
+
+    - name: Post a data blob as a file to thread
       if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && inputs.data-blob != '' }}
       shell: bash
       run: |
