@@ -21,6 +21,10 @@ inputs:
     description: "Heading"
     required: false
     default: ''
+  action-url:
+    description: "Action URL"
+    required: false
+    default: ''
   status:
     description: "Status"
     required: false
@@ -83,6 +87,7 @@ runs:
       shell: bash
       env:
         HEADING: ${{ inputs.heading }}
+        ACTION_URL: ${{ inputs.action-url }}
         FINAL_STATUS: ${{ inputs.final-status }}
         STATUS: ${{ inputs.status }}
         COMMIT_MESSAGE: ${{ inputs.commit-message }}

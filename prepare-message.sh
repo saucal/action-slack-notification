@@ -57,6 +57,10 @@ if [[ -n "$COMMIT_REPO" && -n "$COMMIT_BRANCH" ]]; then
 	update "Branch" "$(printf "<https://github.com/%s/tree/%s|%s>" "$COMMIT_REPO" "$COMMIT_BRANCH" "$COMMIT_BRANCH")"
 fi
 
+if [ -n "$ACTION_URL" ]; then
+	update "Action Details" "$(printf "<%s|%s>" "$ACTION_URL" "Open in GitHub")"
+fi
+
 
 function get() {
 	if [ -f "$1" ]; then

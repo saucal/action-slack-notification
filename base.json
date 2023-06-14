@@ -41,5 +41,14 @@
         "text": "*Message:*\nTest commit\n\nTest Description longer"
       }
     ]
+  },
+  {
+    "type": "section",
+    "fields": [
+      {
+        "type": "mrkdwn",
+        "text": "*Action Details:*\n..."
+      }
+    ]
   }
 ]
