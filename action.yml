@@ -17,6 +17,10 @@ inputs:
     description: "Force new message"
     required: false
     default: 'false'
+  heading:
+    description: "Heading"
+    required: false
+    default: ''
   status:
     description: "Status"
     required: false
@@ -78,6 +82,7 @@ runs:
       id: prepare
       shell: bash
       env:
+        HEADING: ${{ inputs.heading }}
         FINAL_STATUS: ${{ inputs.final-status }}
         STATUS: ${{ inputs.status }}
         COMMIT_MESSAGE: ${{ inputs.commit-message }}

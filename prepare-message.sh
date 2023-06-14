@@ -5,6 +5,15 @@ if [ ! -f "$TARGET" ]; then
 	cat "$GITHUB_ACTION_PATH/base.json" > "$TARGET"
 fi
 
+function updateHeading() {
+	TEMP=$(mktemp)
+	VALUE="$1"
+
+	jq --arg value "$VALUE" '( .[] | select(.type | startswith("header")) ).text.text |= $value' "$TARGET" > "$TEMP"
+	cat "$TEMP" > "$TARGET"
+	rm -rf "$TEMP"
+}
+
 function update() {
 	TEMP=$(mktemp)
 	LABEL="*$1:*"
@@ -14,6 +23,10 @@ function update() {
 	cat "$TEMP" > "$TARGET"
 	rm -rf "$TEMP"
 }
+
+if [ -n "$HEADING" ]; then
+	updateHeading "$HEADING"
+fi
 
 if [ -n "$STATUS" ]; then
 	update "Status" "$STATUS"
