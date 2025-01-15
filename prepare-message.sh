@@ -45,6 +45,8 @@ if [ "$FINAL_STATUS" != "" ]; then
 fi
 
 if [ -n "$COMMIT_MESSAGE" ]; then
+	## Trim everything after the first double line break
+	COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | awk 'NF {print; next} {exit}')
 	update "Message" "$COMMIT_MESSAGE"
 fi
 
