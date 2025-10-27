@@ -125,23 +125,29 @@ runs:
     - name: Post a file to thread
       if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && inputs.data-file != '' }}
       shell: bash
+      env:
+        SLACK_TOKEN: ${{ steps.prepare.outputs.token }}
+        SLACK_CHANNEL: ${{ steps.prepare.outputs.channel }}
+        SLACK_TS: ${{ steps.prepare.outputs.ts || '' }}
+        INITIAL_COMMENT: ${{ inputs.commit-message }}
       run: |
-        if [ "${{ steps.prepare.outputs.ts }}" != "" ]; then
-          SLACK_TS="${{ steps.prepare.outputs.ts }}"
-        else
-          SLACK_TS=$(<$RUNNER_TEMP/slack.ts)
+        if [ -z "$SLACK_TS" ]; then
+          export SLACK_TS=$(<$RUNNER_TEMP/slack.ts)
         fi
-        curl -F file=@${{ inputs.data-file }} -F "initial_comment=${{ inputs.commit-message }}" -F channels=${{ steps.prepare.outputs.channel }} -F thread_ts=$SLACK_TS -H "Authorization: Bearer ${{ steps.prepare.outputs.token }}" https://slack.com/api/files.upload
-
+        ${{ github.action_path }}/upload-file.sh "${{ inputs.data-file }}"
 
     - name: Post a data blob as a file to thread
       if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && inputs.data-blob != '' }}
       shell: bash
+      env:
+        SLACK_TOKEN: ${{ steps.prepare.outputs.token }}
+        SLACK_CHANNEL: ${{ steps.prepare.outputs.channel }}
+        SLACK_TS: ${{ steps.prepare.outputs.ts || '' }}
+        INITIAL_COMMENT: ${{ inputs.commit-message }}
       run: |
-        if [ "${{ steps.prepare.outputs.ts }}" != "" ]; then
-          SLACK_TS="${{ steps.prepare.outputs.ts }}"
-        else
-          SLACK_TS=$(<$RUNNER_TEMP/slack.ts)
+        if [ -z "$SLACK_TS" ]; then
+          export SLACK_TS=$(<$RUNNER_TEMP/slack.ts)
         fi
-        echo -n "${{ inputs.data-blob }}" > "$RUNNER_TEMP/slack-data-blob"
-        curl -F file=@$RUNNER_TEMP/slack-data-blob -F "initial_comment=${{ inputs.commit-message }}" -F channels=${{ steps.prepare.outputs.channel }} -F thread_ts=$SLACK_TS -H "Authorization: Bearer ${{ steps.prepare.outputs.token }}" https://slack.com/api/files.upload
+        BLOB_FILE="$RUNNER_TEMP/slack-data-blob"
+        echo -n "${{ inputs.data-blob }}" > "$BLOB_FILE"
+        ${{ github.action_path }}/upload-file.sh "$BLOB_FILE"
