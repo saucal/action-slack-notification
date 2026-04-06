@@ -97,7 +97,7 @@ runs:
       run: "${{ github.action_path }}/prepare-message.sh"
 
     - name: Send Slack Message (Blocks)
-      uses: archive/github-actions-slack@master
+      uses: archive/github-actions-slack@v2.10.1 # TODO: Roll back this version to master after they fix it
       if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'send-message' }}
       id: send-message
       with:
@@ -112,7 +112,7 @@ runs:
       run: echo -n "${{ fromJson(steps.send-message.outputs.slack-result).response.message.ts }}" > "$RUNNER_TEMP/slack.ts"
 
     - name: Update Slack Message (Blocks)
-      uses: archive/github-actions-slack@master
+      uses: archive/github-actions-slack@v2.10.1 # TODO: Roll back this version to master after they fix it
       if: ${{ steps.prepare.outputs.token != '' && steps.prepare.outputs.channel != '' && steps.prepare.outputs.function == 'update-message' }}
       id: update-message
       with:
